@@ -11,7 +11,7 @@
 
 $router->group(['prefix' => '/api/v1'], function ($router) {
     
-    // Autenticación
+    // Autenticación (públicas)
     $router->post('/auth/login', 'Api\\AuthController@login');
     $router->post('/auth/refresh', 'Api\\AuthController@refresh');
     
@@ -23,13 +23,12 @@ $router->group(['prefix' => '/api/v1'], function ($router) {
         $router->get('/auth/me', 'Api\\AuthController@me');
         
         // Fichajes
-        $router->get('/time-entries', 'Api\\TimeEntryController@index');
-        $router->get('/time-entries/today', 'Api\\TimeEntryController@today');
+        $router->get('/time-entries/status', 'Api\\TimeEntryController@status');
+        $router->get('/time-entries/history', 'Api\\TimeEntryController@history');
         $router->get('/time-entries/summary', 'Api\\TimeEntryController@summary');
         $router->post('/time-entries/clock-in', 'Api\\TimeEntryController@clockIn');
         $router->post('/time-entries/clock-out', 'Api\\TimeEntryController@clockOut');
-        $router->post('/time-entries/break-start', 'Api\\TimeEntryController@breakStart');
-        $router->post('/time-entries/break-end', 'Api\\TimeEntryController@breakEnd');
+        $router->post('/time-entries/qr', 'Api\\TimeEntryController@qr');
         
         // Ausencias
         $router->get('/absences', 'Api\\AbsenceController@index');
