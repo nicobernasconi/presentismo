@@ -147,6 +147,33 @@ class TimeEntry extends Model
      */
     public static function clockIn(int $userId, array $data = []): self
     {
+        // Extraer datos de turno para metadata
+        $shiftData = [];
+        if (isset($data['shift_status'])) {
+            $shiftData['shift_status'] = $data['shift_status'];
+            unset($data['shift_status']);
+        }
+        if (isset($data['shift_id'])) {
+            $shiftData['shift_id'] = $data['shift_id'];
+            unset($data['shift_id']);
+        }
+        if (isset($data['expected_time'])) {
+            $shiftData['expected_time'] = $data['expected_time'];
+            unset($data['expected_time']);
+        }
+        if (isset($data['time_difference'])) {
+            $shiftData['time_difference'] = $data['time_difference'];
+            unset($data['time_difference']);
+        }
+        
+        // Combinar con metadata existente
+        $metadata = $data['metadata'] ?? [];
+        if (is_string($metadata)) {
+            $metadata = json_decode($metadata, true) ?? [];
+        }
+        $metadata = array_merge($metadata, $shiftData);
+        $data['metadata'] = json_encode($metadata);
+        
         return self::create(array_merge([
             'user_id' => $userId,
             'type' => self::TYPE_CLOCK_IN,
@@ -162,6 +189,33 @@ class TimeEntry extends Model
      */
     public static function clockOut(int $userId, array $data = []): self
     {
+        // Extraer datos de turno para metadata
+        $shiftData = [];
+        if (isset($data['shift_status'])) {
+            $shiftData['shift_status'] = $data['shift_status'];
+            unset($data['shift_status']);
+        }
+        if (isset($data['shift_id'])) {
+            $shiftData['shift_id'] = $data['shift_id'];
+            unset($data['shift_id']);
+        }
+        if (isset($data['expected_time'])) {
+            $shiftData['expected_time'] = $data['expected_time'];
+            unset($data['expected_time']);
+        }
+        if (isset($data['time_difference'])) {
+            $shiftData['time_difference'] = $data['time_difference'];
+            unset($data['time_difference']);
+        }
+        
+        // Combinar con metadata existente
+        $metadata = $data['metadata'] ?? [];
+        if (is_string($metadata)) {
+            $metadata = json_decode($metadata, true) ?? [];
+        }
+        $metadata = array_merge($metadata, $shiftData);
+        $data['metadata'] = json_encode($metadata);
+        
         return self::create(array_merge([
             'user_id' => $userId,
             'type' => self::TYPE_CLOCK_OUT,

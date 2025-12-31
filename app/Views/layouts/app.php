@@ -148,14 +148,24 @@
         if (function_exists('\\Core\\Session\\success')) {
             return \Core\Session::success() ?? null;
         }
-        return $_SESSION['success'] ?? null;
+        $msg = $_SESSION['success'] ?? null;
+        unset($_SESSION['success']);
+        return $msg;
     };
     
     $getError = function() {
         if (function_exists('\\Core\\Session\\error')) {
             return \Core\Session::error() ?? null;
         }
-        return $_SESSION['error'] ?? null;
+        $msg = $_SESSION['error'] ?? null;
+        unset($_SESSION['error']);
+        return $msg;
+    };
+    
+    $getWarning = function() {
+        $msg = $_SESSION['warning'] ?? null;
+        unset($_SESSION['warning']);
+        return $msg;
     };
     ?>
     
@@ -446,6 +456,16 @@
                     <i class="fas fa-exclamation-circle text-red-500 mr-3"></i>
                     <span class="text-red-800"><?= htmlspecialchars($error) ?></span>
                     <button @click="show = false" class="ml-auto text-red-500 hover:text-red-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <?php endif; ?>
+
+                <?php $warning = $getWarning(); if ($warning): ?>
+                <div class="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-center" x-data="{ show: true }" x-show="show">
+                    <i class="fas fa-exclamation-triangle text-amber-500 mr-3"></i>
+                    <span class="text-amber-800"><?= htmlspecialchars($warning) ?></span>
+                    <button @click="show = false" class="ml-auto text-amber-500 hover:text-amber-700">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>

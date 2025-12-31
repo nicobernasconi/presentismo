@@ -262,6 +262,15 @@ abstract class Controller
     }
 
     /**
+     * Almacena mensaje de advertencia
+     */
+    protected function withWarning(string $message): self
+    {
+        $_SESSION['warning'] = $message;
+        return $this;
+    }
+
+    /**
      * Valida el token CSRF
      */
     protected function validateCsrfToken(): void

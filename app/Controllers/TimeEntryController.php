@@ -7,6 +7,7 @@ use App\Models\TimeEntry;
 use App\Models\User;
 use App\Models\WorkCenter;
 use App\Models\Project;
+use App\Services\ShiftValidationService;
 use Core\Database;
 
 /**
@@ -80,6 +81,9 @@ class TimeEntryController extends Controller
             return;
         }
 
+        // Validar turno asignado
+        $shiftValidation = ShiftValidationService::validateClockIn($userId);
+        
         // Datos de geolocalización
         $data = [
             'tenant_id' => Auth::tenantId(),
@@ -89,6 +93,11 @@ class TimeEntryController extends Controller
             'project_id' => $this->input('project_id') ?: null,
             'work_center_id' => $user->work_center_id,
             'notes' => $this->input('notes'),
+            // Información del turno
+            'shift_status' => $shiftValidation['status'],
+            'shift_id' => $shiftValidation['shift']->id ?? null,
+            'expected_time' => $shiftValidation['expected_time'] ?? null,
+            'time_difference' => $shiftValidation['difference_minutes'] ?? null,
         ];
 
         // Validar geolocalización si es requerida
@@ -113,7 +122,15 @@ class TimeEntryController extends Controller
 
         TimeEntry::clockIn($userId, $data);
 
-        $this->withSuccess('Entrada registrada correctamente a las ' . date('H:i'));
+        // Construir mensaje con información del turno
+        $message = 'Entrada registrada a las ' . date('H:i');
+        if ($shiftValidation['warning']) {
+            $message .= ' ⚠️ ' . $shiftValidation['message'];
+            $this->withWarning($message);
+        } else {
+            $this->withSuccess($message);
+        }
+        
         $this->redirect('/fichajes');
     }
 
@@ -134,6 +151,9 @@ class TimeEntryController extends Controller
             return;
         }
 
+        // Validar turno asignado
+        $shiftValidation = ShiftValidationService::validateClockOut($userId);
+
         $data = [
             'tenant_id' => Auth::tenantId(),
             'latitude' => $this->input('latitude'),
@@ -141,13 +161,26 @@ class TimeEntryController extends Controller
             'accuracy' => $this->input('accuracy'),
             'work_center_id' => $user->work_center_id,
             'notes' => $this->input('notes'),
+            // Información del turno
+            'shift_status' => $shiftValidation['status'],
+            'shift_id' => $shiftValidation['shift']->id ?? null,
+            'expected_time' => $shiftValidation['expected_time'] ?? null,
+            'time_difference' => $shiftValidation['difference_minutes'] ?? null,
         ];
 
         TimeEntry::clockOut($userId, $data);
 
         $hours = TimeEntry::calculateDailyHours($userId, date('Y-m-d'));
         
-        $this->withSuccess("Salida registrada. Total hoy: {$hours}h");
+        // Construir mensaje con información del turno
+        $message = "Salida registrada. Total hoy: {$hours}h";
+        if ($shiftValidation['warning']) {
+            $message .= ' ⚠️ ' . $shiftValidation['message'];
+            $this->withWarning($message);
+        } else {
+            $this->withSuccess($message);
+        }
+        
         $this->redirect('/fichajes');
     }
 
