@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test QR - Validación</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">Test de Validación QR</h1>
+        
+        <!-- Formulario de Test -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Código QR a validar:
+            </label>
+            <input type="text" 
+                   id="qr-input" 
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   placeholder="FICHAJE:token123:in:1"
+                   value="FICHAJE:token123:in:1">
+            
+            <p class="text-xs text-gray-500 mt-2">
+                Formato esperado: <code class="bg-gray-100 px-2 py-1 rounded">FICHAJE:{token}:{tipo}:{workCenterId}</code>
+            </p>
+        </div>
+        
+        <button onclick="testQr()" 
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition">
+            Validar QR
+        </button>
+        
+        <!-- Resultado -->
+        <div id="result" class="mt-6 hidden">
+            <h3 class="font-semibold text-gray-900 mb-3">Resultado:</h3>
+            <pre id="result-json" class="bg-gray-50 p-4 rounded-lg overflow-x-auto text-xs"></pre>
+        </div>
+    </div>
+
+    <script>
+        async function testQr() {
+            const qrData = document.getElementById('qr-input').value;
+            const resultDiv = document.getElementById('result');
+            const resultJson = document.getElementById('result-json');
+            
+            try {
+                const response = await fetch('/presentismo/public/?route=/fichajes/test-qr', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `qr_data=${encodeURIComponent(qrData)}`
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.classList.remove('hidden');
+                resultJson.textContent = JSON.stringify(data, null, 2);
+                
+                // Colorear según validez
+                if (data.is_valid_format) {
+                    resultDiv.className = 'mt-6 border-2 border-green-200 bg-green-50 p-4 rounded-lg';
+                } else {
+                    resultDiv.className = 'mt-6 border-2 border-red-200 bg-red-50 p-4 rounded-lg';
+                }
+                
+            } catch (error) {
+                resultDiv.classList.remove('hidden');
+                resultDiv.className = 'mt-6 border-2 border-red-200 bg-red-50 p-4 rounded-lg';
+                resultJson.textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        // Permitir Enter para enviar
+        document.getElementById('qr-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                testQr();
+            }
+        });
+    </script>
+</body>
+</html>

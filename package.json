@@ -1,0 +1,15 @@
+{
+  "name": "presentismo-web",
+  "version": "1.0.0",
+  "description": "Sistema de gestión de presentismo",
+  "scripts": {
+    "css:build": "tailwindcss -i ./resources/css/input.css -o ./public/css/styles.css",
+    "css:watch": "tailwindcss -i ./resources/css/input.css -o ./public/css/styles.css --watch",
+    "build": "npm run css:build",
+    "dev": "npm run css:watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1",
+    "postcss": "^8.4.32"
+  }
+}

@@ -1,0 +1,52 @@
+# Vendor dependencies
+/vendor/
+/node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+/logs/
+debug_*.log
+
+# Cache
+/cache/
+*.cache
+
+# Compiled CSS (keep source)
+/public/css/*.min.css
+
+# Temporary files
+/tmp/
+*.tmp
+
+# Config with sensitive data
+/config/database.local.php
+
+# Session files
+/sessions/
+
+# Uploads (if any)
+/uploads/
+/public/uploads/
+
+# PHPUnit
+/phpunit.xml
+/.phpunit.result.cache
+
+# Composer
+composer.lock

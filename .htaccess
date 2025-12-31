@@ -1,0 +1,26 @@
+# Permitir PATH_INFO para todo el directorio
+AcceptPathInfo On
+
+<IfModule mod_rewrite.c>
+    Options -MultiViews
+    RewriteEngine On
+    
+    # Establecer la base para el subdirectorio
+    RewriteBase /presentismo/
+    
+    # Permitir acceso directo a la landing page (raíz)
+    RewriteRule ^$ index.php [L]
+    RewriteRule ^index\.php$ - [L]
+    
+    # Redirigir todo lo demás a la carpeta public
+    RewriteCond %{REQUEST_URI} !^/presentismo/public/
+    RewriteCond %{REQUEST_URI} !^/presentismo/index\.php$
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Bloquear acceso directo a carpetas sensibles
+<FilesMatch "^(composer\.json|composer\.lock|package\.json|\.env)$">
+    Require all denied
+</FilesMatch>
+
+Options -Indexes

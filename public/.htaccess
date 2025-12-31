@@ -1,0 +1,54 @@
+# Permitir PATH_INFO (necesario para index.php/ruta)
+AcceptPathInfo On
+
+# Evitar errores 404 con PATH_INFO
+<Files "index.php">
+    AcceptPathInfo On
+</Files>
+
+# CON mod_rewrite (URLs limpias)
+<IfModule mod_rewrite.c>
+    Options -MultiViews
+    RewriteEngine On
+    
+    # Establecer la base para el subdirectorio
+    RewriteBase /presentismo/public/
+    
+    # Manejar Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    
+    # Redirigir solicitudes al front controller
+    # Si el archivo o directorio existe, mostrarlo directamente
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+# Deshabilitar listado de directorios
+Options -Indexes
+
+# Bloquear acceso a archivos sensibles
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Deshabilitar listado de directorios
+Options -Indexes
+
+# Bloquear acceso a archivos sensibles
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Tipos MIME
+<IfModule mod_mime.c>
+    AddType application/javascript js
+    AddType text/css css
+</IfModule>
+
+# PHP settings (opcional)
+<IfModule mod_php7.c>
+    php_flag display_errors Off
+    php_flag log_errors On
+</IfModule>
