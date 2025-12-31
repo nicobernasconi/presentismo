@@ -14,9 +14,13 @@
         <div>
             <label for="month" class="block text-sm font-medium text-gray-700 mb-1">Mes</label>
             <select id="month" name="month" class="w-full border-gray-300 rounded-lg">
-                <?php for ($m = 1; $m <= 12; $m++): ?>
-                <option value="<?= str_pad($m, 2, '0', STR_PAD_LEFT) ?>" <?= $month == str_pad($m, 2, '0', STR_PAD_LEFT) ? 'selected' : '' ?>>
-                    <?= strftime('%B', mktime(0, 0, 0, $m, 1)) ?>
+                <?php 
+                $monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                for ($m = 1; $m <= 12; $m++): 
+                $monthValue = str_pad($m, 2, '0', STR_PAD_LEFT);
+                ?>
+                <option value="<?= $monthValue ?>" <?= $month == $monthValue ? 'selected' : '' ?>>
+                    <?= $monthNames[$m - 1] ?>
                 </option>
                 <?php endfor; ?>
             </select>

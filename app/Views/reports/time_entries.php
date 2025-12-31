@@ -44,12 +44,18 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     <?php foreach ($timeEntries as $entry): ?>
+                    <?php 
+                        $totalMinutes = $entry['total_minutes'] ?? 0;
+                        $hours = floor($totalMinutes / 60);
+                        $minutes = $totalMinutes % 60;
+                        $hoursFormatted = $totalMinutes > 0 ? sprintf('%d:%02d', $hours, $minutes) : '-';
+                    ?>
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 text-sm text-gray-900"><?= htmlspecialchars($entry['name'] ?? '') ?></td>
                         <td class="px-6 py-4 text-sm text-gray-600"><?= date('d/m/Y', strtotime($entry['clock_in_time'] ?? '')) ?></td>
                         <td class="px-6 py-4 text-sm text-gray-600"><?= date('H:i', strtotime($entry['clock_in_time'] ?? '')) ?></td>
-                        <td class="px-6 py-4 text-sm text-gray-600"><?= $entry['clock_out_time'] ? date('H:i', strtotime($entry['clock_out_time'])) : '-' ?></td>
-                        <td class="px-6 py-4 text-sm text-gray-600">-</td>
+                        <td class="px-6 py-4 text-sm text-gray-600"><?= $entry['clock_out_time'] ? date('H:i', strtotime($entry['clock_out_time'])) : '<span class="text-amber-600">En curso</span>' ?></td>
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900"><?= $hoursFormatted ?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>

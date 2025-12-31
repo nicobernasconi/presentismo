@@ -46,9 +46,9 @@
                     <?php foreach ($absences as $absence): ?>
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 text-sm text-gray-900"><?= htmlspecialchars($absence['name'] ?? '') ?></td>
-                        <td class="px-6 py-4 text-sm text-gray-600"><?= htmlspecialchars($absence['type_name'] ?? '') ?></td>
-                        <td class="px-6 py-4 text-sm text-gray-600"><?= date('d/m/Y', strtotime($absence['start_date'] ?? '')) ?></td>
-                        <td class="px-6 py-4 text-sm text-gray-600"><?= date('d/m/Y', strtotime($absence['end_date'] ?? '')) ?></td>
+                        <td class="px-6 py-4 text-sm text-gray-600"><?= htmlspecialchars($absence['type_name'] ?? 'Sin tipo') ?></td>
+                        <td class="px-6 py-4 text-sm text-gray-600"><?= !empty($absence['start_date']) ? date('d/m/Y', strtotime($absence['start_date'])) : '-' ?></td>
+                        <td class="px-6 py-4 text-sm text-gray-600"><?= !empty($absence['end_date']) ? date('d/m/Y', strtotime($absence['end_date'])) : '-' ?></td>
                         <td class="px-6 py-4 text-sm">
                             <?php 
                             $status = $absence['status'] ?? 'pending';
